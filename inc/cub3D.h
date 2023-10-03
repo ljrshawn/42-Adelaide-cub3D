@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 12:21:01 by jlyu              #+#    #+#             */
-/*   Updated: 2023/09/28 16:10:52 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/10/03 16:19:58 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,15 @@ typedef struct s_map
 	char	*_so;
 	char	*_we;
 	char	*_ea;
-	int		f_color;
-	int		c_color;
-	char	**data;
+	int		_fr;
+	int		_fg;
+	int		_fb;
+	int		_cr;
+	int		_cg;
+	int		_cb;
+	char	**_data;
+	int		_dm;
+	int		_dn;
 }	t_map;
 
 typedef struct s_vars
