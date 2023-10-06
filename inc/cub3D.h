@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 12:21:01 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/03 16:19:58 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/10/06 16:35:58 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,28 @@ typedef struct s_vars
 {
 	void	*mlx;
 	void	*win;
+	int		width;
+	int		height;
 }	t_vars;
+
+// Main
+void	cub3d(char **argv);
+
+// Draw
+void	cub3d_draw(t_map *map);
 
 // Close
 int		close_win_esc(int keycode, t_vars *vars);
 int		close_win_mouse(void);
 
+// Utils
+void	init_map(t_map *map);
+void	free_map(t_map *map);
+void	free_contain(char **arr);
+
 // Read file
 void	read_file(t_map *map, char *path);
+void	save_to_map(t_map *map, char *string);
 
-void	cub3d(char **argv);
 
 #endif
