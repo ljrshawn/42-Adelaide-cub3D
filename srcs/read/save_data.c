@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 16:07:53 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/06 16:21:57 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/10/10 15:57:37 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,24 @@ static void	save_color(t_map *map, char *str, char flag)
 	free_contain(rgb);
 }
 
-static void	copy_old(t_map *map, char **tem, char *string, int m)
+static void	copy_old(t_map *map, char **tem, int j)
+{
+	int		len;
+	int		i;
+
+	tem[j] = malloc((map->_dm + 1) * sizeof(char));
+	i = -1;
+	len = ft_strlen(map->_data[j]);
+	while (++i < len)
+		tem[j][i] = map->_data[j][i];
+	i--;
+	while (++i < map->_dm)
+		tem[j][i] = '-';
+	tem[j][i] = '\0';
+	free(map->_data[j]);
+}
+
+static void	add_new_data(t_map *map, char **tem, char *string, int m)
 {
 	int		i;
 	int		j;
@@ -48,10 +65,7 @@ static void	copy_old(t_map *map, char **tem, char *string, int m)
 	if (map->_data != NULL)
 	{
 		while (++j < (map->_dn - 1))
-		{
-			tem[j] = ft_strjoin("", map->_data[j]);
-			free(map->_data[j]);
-		}
+			copy_old(map, tem, j);
 		free(map->_data);
 		j--;
 	}
@@ -61,6 +75,11 @@ static void	copy_old(t_map *map, char **tem, char *string, int m)
 	{
 		if (string[i] == ' ' || i >= m)
 			tem[j][i] = '-';
+		else if (string[i] == 'N')
+		{
+			map->_cur_pos.x = j;
+			map->_cur_pos.y = i;
+		}
 		else
 			tem[j][i] = string[i];
 	}
@@ -80,7 +99,7 @@ static void	append_map(t_map *map, char *string)
 		map->_dm = m;
 	map->_dn += 1;
 	tem = malloc((map->_dn + 1) * sizeof(char *));
-	copy_old(map, tem, string, m);
+	add_new_data(map, tem, string, m);
 	map->_data = tem;
 }
 

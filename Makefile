@@ -9,7 +9,7 @@ FRAMEWORKS = -framework OpenGL -framework AppKit
 LIBRARY = -lmlx -lft
 
 INCS = ./inc
-SRCS = ./srcs/*.c ./srcs/read/*.c ./srcs/draw/*.c
+SRCS = ./srcs/*.c ./srcs/read/*.c ./srcs/draw/*.c ./srcs/handling/*.c
 LIBS = ./libs
 
 NAME = cub3D

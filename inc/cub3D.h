@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 12:21:01 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/06 16:35:58 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/10/10 16:06:22 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,44 @@
 # include "../libs/libft/libft.h"
 # include "../libs/mlx/mlx.h"
 
+typedef struct s_vector
+{
+	int		x;
+	int		y;
+}	t_vector;
+
 typedef struct s_map
 {
-	char	*_no;
-	char	*_so;
-	char	*_we;
-	char	*_ea;
-	int		_fr;
-	int		_fg;
-	int		_fb;
-	int		_cr;
-	int		_cg;
-	int		_cb;
-	char	**_data;
-	int		_dm;
-	int		_dn;
+	char		*_no;
+	char		*_so;
+	char		*_we;
+	char		*_ea;
+	int			_fr;
+	int			_fg;
+	int			_fb;
+	int			_cr;
+	int			_cg;
+	int			_cb;
+	char		**_data;
+	int			_dm;
+	int			_dn;
+	t_vector	_cur_pos;
+	t_vector	_pre_pos;
 }	t_map;
 
 typedef struct s_vars
 {
-	void	*mlx;
-	void	*win;
-	int		width;
-	int		height;
+	void		*mlx;
+	void		*win;
+	void		*image;
+	int			width;
+	int			height;
+	int			color;
+	int			pixel_bits;
+	int			line_bytes;
+	int			endian;
+	char		*buffer;
+	t_map		*_map;
 }	t_vars;
 
 // Main
@@ -52,10 +67,12 @@ void	cub3d(char **argv);
 
 // Draw
 void	cub3d_draw(t_map *map);
+void	draw_map(t_vars *vars);
 
-// Close
-int		close_win_esc(int keycode, t_vars *vars);
+// handling
+int		key_press(int keycode, t_vars *vars);
 int		close_win_mouse(void);
+int		updating(t_vars *vars);
 
 // Utils
 void	init_map(t_map *map);
@@ -65,6 +82,5 @@ void	free_contain(char **arr);
 // Read file
 void	read_file(t_map *map, char *path);
 void	save_to_map(t_map *map, char *string);
-
 
 #endif

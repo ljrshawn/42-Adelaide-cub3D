@@ -6,103 +6,97 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 13:19:19 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/06 16:37:37 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/10/10 16:44:08 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3D.h"
 
-// void	cub3d_draw(t_map *map)
-// {
-// 	t_vars	vars;
-// 	// int		ratio;
-
-// 	// ratio = data[0][1] / data[0][0];
-// 	// if (data[0][1] % data[0][0] != 0)
-// 	// 	ratio += 1;
-// 	vars.mlx = mlx_init();
-// 	vars.win = mlx_new_window(vars.mlx, 720, 720, "cub3D");
-// 	// draw_img(&vars, data, ratio);
-// 	void *image = mlx_new_image(vars.mlx, 720, 720);
-// 	int color = 0xABCDEF;
-
-// 	int pixel_bits;
-// 	int line_bytes;
-// 	int endian;
-// 	char *buffer = mlx_get_data_addr(image, &pixel_bits, &line_bytes, &endian);
-
-// 	if (pixel_bits != 32)
-// 		color = mlx_get_color_value(vars.mlx, color);
-
-// 	for(int y = 0; y < 360; ++y)
-// 	for(int x = 0; x < 720; ++x)
-// 	{
-// 		int pixel = (y * line_bytes) + (x * 4);
-
-// 		if (endian == 1)
-// 		{
-// 			buffer[pixel + 0] = (color >> 24);
-// 			buffer[pixel + 1] = (color >> 16) & 0xFF;
-// 			buffer[pixel + 2] = (color >> 8) & 0xFF;
-// 			buffer[pixel + 3] = (color) & 0xFF;
-// 		}
-// 		else if (endian == 0)
-// 		{
-// 			buffer[pixel + 0] = (color) & 0xFF;
-// 			buffer[pixel + 1] = (color >> 8) & 0xFF;
-// 			buffer[pixel + 2] = (color >> 16) & 0xFF;
-// 			buffer[pixel + 3] = (color >> 24);
-// 		}
-// 		// buffer[(y * line_bytes) + (x * 4)] = color;
-// 	}
-// 	mlx_put_image_to_window(vars.mlx, vars.win, image, 0, 0);
-
-// 	// int		img_width = 20;
-// 	// 	int		img_height = 20;
-// 	// char	*relative_path = "../texture/wall.jpeg";
-// 	// void	*image = mlx_xpm_file_to_image(vars.mlx, relative_path, &img_width, &img_height);
-// 	// mlx_put_image_to_window(vars.mlx, vars.win, image, 0, 0);
-
-// 	mlx_hook(vars.win, 2, 1L << 0, close_win_esc, &vars);
-// 	mlx_hook(vars.win, 17, 1L << 5, close_win_mouse, &vars);
-// 	mlx_loop(vars.mlx);
-// }
-
-void	draw_map(t_map *map, t_vars *vars)
+void	draw_map(t_vars *vars)
 {
-	void *image = mlx_new_image(vars->mlx, vars->width / 2, vars->height);
-	int color = 0xABCDEF;
-
-	int pixel_bits;
-	int line_bytes;
-	int endian;
-	char *buffer = mlx_get_data_addr(image, &pixel_bits, &line_bytes, &endian);
-
-	if (pixel_bits != 32)
-		color = mlx_get_color_value(vars->mlx, color);
-
-	for(int y = 0; y < vars->height; ++y)
-	for(int x = 0; x < vars->width / 2; ++x)
+	int m = ((vars->width / 2) - 40) / vars->_map->_dm;
+	int	n = (vars->height - 40) / vars->_map->_dn;
+	int start_x;
+	int start_y;
+	if (vars->_map->_dn * m > vars->height)
 	{
-		int pixel = (y * line_bytes) + (x * 4);
-
-		if (endian == 1)
-		{
-			buffer[pixel + 0] = (color >> 24);
-			buffer[pixel + 1] = (color >> 16) & 0xFF;
-			buffer[pixel + 2] = (color >> 8) & 0xFF;
-			buffer[pixel + 3] = (color) & 0xFF;
-		}
-		else if (endian == 0)
-		{
-			buffer[pixel + 0] = (color) & 0xFF;
-			buffer[pixel + 1] = (color >> 8) & 0xFF;
-			buffer[pixel + 2] = (color >> 16) & 0xFF;
-			buffer[pixel + 3] = (color >> 24);
-		}
-		// buffer[(y * line_bytes) + (x * 4)] = color;
+		start_x = ((vars->width / 2) - (vars->_map->_dm * n)) / 2;
+		start_y = 20;
+		m = n;
 	}
-	mlx_put_image_to_window(vars->mlx, vars->win, image, 0, 0);
+	else
+	{
+		start_x = 20;
+		start_y = ((vars->height - (vars->_map->_dn * m)) / 2);
+	}
+
+	for(int y = start_y; y < (vars->_map->_dn * m) + start_y; ++y)
+	for(int x = start_x; x < (vars->_map->_dm * m) + start_x; ++x)
+	{
+		int y_co = (y - start_y) / m;
+		int x_co = (x - start_x) / m;
+		if (vars->_map->_data[y_co][x_co] == '1')
+		{
+			vars->color = 0xABCDEF;
+			int pixel = (y * vars->line_bytes) + (x * 4);
+
+			if (vars->endian == 1)
+			{
+				vars->buffer[pixel + 0] = (vars->color >> 24);
+				vars->buffer[pixel + 1] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color) & 0xFF;
+			}
+			else if (vars->endian == 0)
+			{
+				vars->buffer[pixel + 0] = (vars->color) & 0xFF;
+				vars->buffer[pixel + 1] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color >> 24);
+			}
+		}
+		else if (y_co == vars->_map->_pre_pos.x && x_co == vars->_map->_pre_pos.y)
+		{
+			vars->color = 0x000000;
+			int pixel = (y * vars->line_bytes) + (x * 4);
+
+			if (vars->endian == 1)
+			{
+				vars->buffer[pixel + 0] = (vars->color >> 24);
+				vars->buffer[pixel + 1] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color) & 0xFF;
+			}
+			else if (vars->endian == 0)
+			{
+				vars->buffer[pixel + 0] = (vars->color) & 0xFF;
+				vars->buffer[pixel + 1] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color >> 24);
+			}
+		}
+		else if (y_co == vars->_map->_cur_pos.x && x_co == vars->_map->_cur_pos.y)
+		{
+			vars->color = 0xFEDCBA;
+			int pixel = (y * vars->line_bytes) + (x * 4);
+
+			if (vars->endian == 1)
+			{
+				vars->buffer[pixel + 0] = (vars->color >> 24);
+				vars->buffer[pixel + 1] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color) & 0xFF;
+			}
+			else if (vars->endian == 0)
+			{
+				vars->buffer[pixel + 0] = (vars->color) & 0xFF;
+				vars->buffer[pixel + 1] = (vars->color >> 8) & 0xFF;
+				vars->buffer[pixel + 2] = (vars->color >> 16) & 0xFF;
+				vars->buffer[pixel + 3] = (vars->color >> 24);
+			}
+		}
+	}
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->image, 0, 0);
 }
 
 void	cub3d_draw(t_map *map)
@@ -110,11 +104,15 @@ void	cub3d_draw(t_map *map)
 	t_vars	vars;
 
 	vars.mlx = mlx_init();
-	vars.width = 1440;
-	vars.height = 720;
+	vars.width = 1920;
+	vars.height = 1080;
 	vars.win = mlx_new_window(vars.mlx, vars.width, vars.height, "cub3D");
-	draw_map(map, &vars);
-	mlx_hook(vars.win, 2, 1L << 0, close_win_esc, &vars);
+	vars.image = mlx_new_image(vars.mlx, vars.width, vars.height);
+	vars.buffer = mlx_get_data_addr(vars.image, &vars.pixel_bits, &vars.line_bytes, &vars.endian);
+	vars._map = map;
+	draw_map(&vars);
+	mlx_hook(vars.win, 2, 1L << 0, key_press, &vars);
+	mlx_loop_hook(vars.mlx, updating, &vars);
 	mlx_hook(vars.win, 17, 1L << 5, close_win_mouse, &vars);
 	mlx_loop(vars.mlx);
 }
