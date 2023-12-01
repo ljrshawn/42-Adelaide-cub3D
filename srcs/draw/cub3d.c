@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 15:24:18 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/10 15:54:30 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/11/20 13:41:16 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	cub3d(char **argv)
 {
 	t_map	map;
+	(void) argv;
 
 	init_map(&map);
 	read_file(&map, *argv);

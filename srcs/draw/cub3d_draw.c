@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 13:19:19 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/10 16:44:08 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/12/01 11:43:56 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,38 @@ void	draw_map(t_vars *vars)
 			}
 		}
 	}
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->image, 0, 0);
+}
+
+void	draw_game(t_vars *vars)
+{
+	t_vars	games;
+
+	games.image = mlx_xpm_file_to_image(vars->mlx, TEXTURE_S, &(games.width), &(games.height));
+	games.buffer = mlx_get_data_addr(games.image, &games.pixel_bits, &games.line_bytes, &games.endian);
+	int count_h = -1;
+		while (++count_h < games.height)
+		{
+			int count_w = -1;
+			while (++count_w < games.width)
+			{
+				int vars_pixel = (count_w * vars->line_bytes) + (count_h * 4) + vars->line_bytes / 2;
+				int games_pixel = (count_w * games.line_bytes) + (count_h * 4);
+				if (vars->endian == 1)
+				{
+					vars->buffer[vars_pixel + 0] = (games.buffer[games_pixel + 0] >> 24);
+					vars->buffer[vars_pixel + 1] = (games.buffer[games_pixel + 1] >> 16) & 0xFF;
+					vars->buffer[vars_pixel + 2] = (games.buffer[games_pixel + 2] >> 8) & 0xFF;
+					vars->buffer[vars_pixel + 3] = (games.buffer[games_pixel + 3]) & 0xFF;
+				}
+				else if (vars->endian == 0)
+				{
+					vars->buffer[vars_pixel + 0] = (games.buffer[games_pixel + 0]) & 0xFF;
+					vars->buffer[vars_pixel + 1] = (games.buffer[games_pixel + 1] >> 8) & 0xFF;
+					vars->buffer[vars_pixel + 2] = (games.buffer[games_pixel + 2] >> 16) & 0xFF;
+					vars->buffer[vars_pixel + 3] = (games.buffer[games_pixel + 3] >> 24);
+				}
+			}
+		}
 }
 
 void	cub3d_draw(t_map *map)
@@ -111,8 +142,9 @@ void	cub3d_draw(t_map *map)
 	vars.buffer = mlx_get_data_addr(vars.image, &vars.pixel_bits, &vars.line_bytes, &vars.endian);
 	vars._map = map;
 	draw_map(&vars);
+	draw_game(&vars);
+	mlx_put_image_to_window(vars.mlx, vars.win, vars.image, 0, 0);
 	mlx_hook(vars.win, 2, 1L << 0, key_press, &vars);
-	mlx_loop_hook(vars.mlx, updating, &vars);
 	mlx_hook(vars.win, 17, 1L << 5, close_win_mouse, &vars);
 	mlx_loop(vars.mlx);
 }

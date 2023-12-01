@@ -6,7 +6,7 @@
 /*   By: jlyu <jlyu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 15:27:34 by jlyu              #+#    #+#             */
-/*   Updated: 2023/10/10 16:18:54 by jlyu             ###   ########.fr       */
+/*   Updated: 2023/12/01 11:44:46 by jlyu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ static void	change_pos(t_vars *vars, t_vector *new_pos)
 	{
 		vars->_map->_cur_pos.x = new_pos->x;
 		vars->_map->_cur_pos.y = new_pos->y;
+		draw_map(vars);
+		draw_game(vars);
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->image, 0, 0);
 	}
-	printf("%d  %d\n", vars->_map->_pre_pos.x, vars->_map->_pre_pos.y);
-	printf("%d  %d\n", vars->_map->_cur_pos.x, vars->_map->_cur_pos.y);
+	// printf("%d  %d\n", vars->_map->_pre_pos.x, vars->_map->_pre_pos.y);
+	// printf("%d  %d\n", vars->_map->_cur_pos.x, vars->_map->_cur_pos.y);
 }
 
 int	key_press(int keycode, t_vars *vars)
